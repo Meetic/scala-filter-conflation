@@ -12,10 +12,10 @@ trait FilterConflation[E] {
   val tickInterval = 10 seconds
 
   // The buffer will hold the current conflation window for each providerId :
-  // providerId (String) is the key and time (Long) of the first event received is the value
+  // userId (String) is the key and time (Long) of the first event received is the value
   def buffer: mutable.HashMap[String, Long]
 
-  // Method to check if the event's providerId is currently filtered and send it otherwise
+  // Method to check if the event's userId is currently filtered and send it otherwise
   def sendOrFilterEvent(event: E): Unit
 
   // Method to purge the buffer of expired entries
