@@ -2,7 +2,7 @@ package meetup.conflation.actor
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import meetup.conflation.actor.ConflationActor.Tick
-import meetup.conflation.conflation.{Conflated, FilterConflation}
+import meetup.conflation.conflation.FilterConflation
 import meetup.conflation.event.SessionEvent
 
 import scala.collection.mutable
@@ -15,12 +15,12 @@ object ConflationActor {
 
 class ConflationActor(target: ActorRef) extends Actor with ActorLogging with FilterConflation[SessionEvent] {
 
-  override val buffer = mutable.HashMap[String, Conflated[SessionEvent]]()
+  override val buffer = mutable.HashMap[String, Long]()
 
   override def sendOrFilterEvent(event: SessionEvent): Unit = {
     if (! buffer.contains(event.userId)) {
       target ! event
-      buffer.put(event.userId, Conflated(event, System.currentTimeMillis()))
+      buffer.put(event.userId, System.currentTimeMillis())
     }
     // else ignore event
   }
@@ -29,7 +29,7 @@ class ConflationActor(target: ActorRef) extends Actor with ActorLogging with Fil
     log.info(s"Purging filtered events (${buffer.size})")
     val threshold = System.currentTimeMillis() - delay.toMillis
     buffer.retain {
-      case (userId, Conflated(_, time)) if time < threshold => false
+      case (_, time) if time < threshold => false
       case _ => true
     }
   }
