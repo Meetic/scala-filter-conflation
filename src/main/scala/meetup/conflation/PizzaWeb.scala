@@ -6,7 +6,7 @@ import scala.concurrent.duration._
 
 object PizzaWeb extends App {
 
-  implicit val system = ActorSystem("pizza-factory")
+  implicit val system = ActorSystem("pizza-web")
 
   val idRangeStart = 10000
   val idRangeEnd = 18000
