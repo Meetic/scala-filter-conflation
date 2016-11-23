@@ -5,12 +5,12 @@ import scala.concurrent.duration._
 
 trait FilterConflation[E] {
 
-  val delay = 10 seconds
-  val tickInterval = 2 seconds
+  val delay = 60 seconds
+  val tickInterval = 10 seconds
 
   def buffer: mutable.HashMap[String, Conflated[E]]
 
-  def filterEvent(event: E): Unit
+  def sendOrFilterEvent(event: E): Unit
 
   def purgeFilteredEvents(): Unit
 }
